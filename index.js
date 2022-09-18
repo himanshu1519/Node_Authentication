@@ -9,8 +9,16 @@ const db = require('./config/mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
-// const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo');
+const sassMiddleware = require('node-sass-middleware');
 
+app.use(sassMiddleware({
+    src:'./assets/scss',
+    dest:'./assets/css',
+    debug:true,
+    outputStyle:'extented',
+    prefix:'/css'
+}));
 app.use(express.urlencoded());
 
 app.use(cookieParser());
@@ -38,10 +46,17 @@ app.use(session({
     cookie:{
         maxAge: (1000 * 60 * 100)
     },
-    // store: new MongoStore({
-    //     mongooseConnection: db,
-    //     autoRemove:'disabled'
-    // })
+    store :  MongoStore.create ({
+        
+        mongoUrl:`mongodb://localhost/codeial_development`,
+        autoRemove:'disabled'
+    
+    },
+    function(err){
+        console.log(err || 'connect-mongodb setup ok');
+    }
+    
+    )
 }));
 
 app.use(passport.initialize());

@@ -93,8 +93,10 @@ module.exports.create = function (req, res) {
 
 //get the sign in data
 module.exports.createSession = function (req, res) {
-    //steps to authenticate
-    //find the user
+    // return res.redirect('/');
+
+    // steps to authenticate
+    // find the user
     User.findOne({ email: req.body.email }, function (err, user) {
         if (err) { console.log('error in finding user in signing in'); return }
 
@@ -118,6 +120,11 @@ module.exports.createSession = function (req, res) {
         }
 
     });
-
-
+}
+module.exports.destroySession = function(req,res){
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        // req.flash('success','logout successfully');
+        return res.redirect('/');
+      });
 }
